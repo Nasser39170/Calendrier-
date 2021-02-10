@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css?family=VT323');
+
+:root {
+}
+
+html {
+}
+
+body {
+	padding-top: 122px !important;
+    height: 100%;
+	width: 100%;
+	background-image: url('../../images/img.gif');
+}
+
+body, body * {
+	position: relative;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-family: vt323, sans-serif;
+	letter-spacing: .5px;
+	text-align: center;
+	/*border: 1px solid;*/
+	outline: none;
+}
+
+body *::selection {
+	background-color: transparent;
+}
+
+#squiggle {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(100%) translateY(-100%);
+}
+
+@keyframes squiggle {
+	100% {
+		transform: translate(-500%) translateY(400%);
+	}
+}
+
+#ekg {
+	position: absolute;
+	top: 420px;
+	width: 50%;
+	border-radius: 25%;
+	transform: translate(-50%);
+}
+
+h1 {
+	margin-bottom: 68px;
+	color: whitesmoke;
+	font-size: 64px;
+	letter-spacing: 4px;
+	text-shadow: 0 2px 0 #111, 0 1px 4px #333;
+}
+
+#android-container {
+	display: inline-block;
+	margin-bottom: 74px;
+	/*more negative pulls face more to the left*/
+	transform: rotate(0) translate(-10px);
+	transition: transform 4.5s ease-in;
+}
+
+.android {
+	--width: 400px;
+	--height: 246px;
+	margin: auto;
+	width: var(--width);
+	background-image: url("https://raw.githubusercontent.com/ccallen001/JS30Chase/master/23%20Speech%20Synthesis/images/android.png");
+}
+
+.android.top {
+	height: var(--height);
+}
+
+.android.bottom {
+	--bot-height: calc(var(--width) - var(--height));
+	height: var(--bot-height);
+	background-position: 0 var(--bot-height);
+}
+
+/* for android top talking animation */
+
+@keyframes talk {
+	50% {
+		transform: rotate(-15deg);
+	}
+}
+
+#speak-btn {
+	--bg-color: lightgray;
+	--color: #303030;
+	display: block;
+	margin: auto;
+	margin-bottom: 32px;
+	padding: 10px 164px 11px;
+	background-color: var(--bg-color);
+	color: var(--color);
+	font-size: 24px;
+	font-weight: bold;
+	letter-spacing: 4px;
+	text-shadow: 0 1px 16px white;
+	border: none;
+	border-top: 1px solid #111;
+	border-radius: 16px;
+	box-shadow: 0 1px 0, 0 2px 8px;
+	cursor: pointer;
+	transition: background-color .1s linear, color .15s linear;
+}
+
+#speak-btn:hover {
+	background-color: var(--color);
+	color: whitesmoke;
+	text-shadow: 0 1px 16px;
+	box-shadow: 0 1px 0 #111, 0 2px 8px #111;
+}

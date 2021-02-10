@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cadeau 2</title>
+    <link href="https://fonts.googleapis.com/css?family=Orbitron:400,500,700,900" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flickity/2.0.10/flickity.pkgd.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/836/flickity.css" type="text/css">
+</head>
+<body>
+  
+<div class="loader"></div>
+<div class="lock">
+  <div class="screen">
+    <div class="code">0000</div>
+    <div class="status">LOCKED</div>
+    <div class="scanlines"></div>
+  </div>
+  <div class="rows">
+    <div class="row">
+      <div class="cell">
+        <div class="text">0</div>
+      </div>
+      <div class="cell">
+        <div class="text">1</div>
+      </div>
+      <div class="cell">
+        <div class="text">2</div>
+      </div>
+      <div class="cell">
+        <div class="text">3</div>
+      </div>
+      <div class="cell">
+        <div class="text">4</div>
+      </div>
+      <div class="cell">
+        <div class="text">5</div>
+      </div>
+      <div class="cell">
+        <div class="text">6</div>
+      </div>
+      <div class="cell">
+        <div class="text">7</div>
+      </div>
+      <div class="cell">
+        <div class="text">8</div>
+      </div>
+      <div class="cell">
+        <div class="text">9</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="cell">
+        <div class="text">0</div>
+      </div>
+      <div class="cell">
+        <div class="text">1</div>
+      </div>
+      <div class="cell">
+        <div class="text">2</div>
+      </div>
+      <div class="cell">
+        <div class="text">3</div>
+      </div>
+      <div class="cell">
+        <div class="text">4</div>
+      </div>
+      <div class="cell">
+        <div class="text">5</div>
+      </div>
+      <div class="cell">
+        <div class="text">6</div>
+      </div>
+      <div class="cell">
+        <div class="text">7</div>
+      </div>
+      <div class="cell">
+        <div class="text">8</div>
+      </div>
+      <div class="cell">
+        <div class="text">9</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="cell">
+        <div class="text">0</div>
+      </div>
+      <div class="cell">
+        <div class="text">1</div>
+      </div>
+      <div class="cell">
+        <div class="text">2</div>
+      </div>
+      <div class="cell">
+        <div class="text">3</div>
+      </div>
+      <div class="cell">
+        <div class="text">4</div>
+      </div>
+      <div class="cell">
+        <div class="text">5</div>
+      </div>
+      <div class="cell">
+        <div class="text">6</div>
+      </div>
+      <div class="cell">
+        <div class="text">7</div>
+      </div>
+      <div class="cell">
+        <div class="text">8</div>
+      </div>
+      <div class="cell">
+        <div class="text">9</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="cell">
+        <div class="text">0</div>
+      </div>
+      <div class="cell">
+        <div class="text">1</div>
+      </div>
+      <div class="cell">
+        <div class="text">2</div>
+      </div>
+      <div class="cell">
+        <div class="text">3</div>
+      </div>
+      <div class="cell">
+        <div class="text">4</div>
+      </div>
+      <div class="cell">
+        <div class="text">5</div>
+      </div>
+      <div class="cell">
+        <div class="text">6</div>
+      </div>
+      <div class="cell">
+        <div class="text">7</div>
+      </div>
+      <div class="cell">
+        <div class="text">8</div>
+      </div>
+      <div class="cell">
+        <div class="text">9</div>
+      </div>
+    </div>
+  </div>
+  <font color="white"><h4>Objectif trouver le bon code</h4></font>
+  <font color="white"><h5>Indice : En quel année l'Espagne<br /> à gagné la coupe du monde ?</h5></font>
+</div>
+<div class="info">
+</div>
+<script>
+class Lock {
+  
+  constructor() {
+    this.pin = '2010';
+    this.setupDom();
+    this.setupFlickity();  
+    this.setupAudio();
+    this.onResize();
+    this.listen();
+  }
+  
+  listen() {
+    window.addEventListener('resize', () => this.onResize());
+  }
+  
+  onResize() {
+    if(window.innerWidth % 2 === 0) {
+      this.dom.lock.style.marginLeft = '0px';
+    } else {
+      this.dom.lock.style.marginLeft = '1px';
+    }
+  }
+  
+  onChange() {
+    this.sounds.select.play();
+    this.code = this.getCode();
+    this.dom.code.textContent = this.code;
+    if(this.code === this.pin) {
+      this.verified = true;
+      this.dom.lock.classList.add('verified');
+      this.dom.status.textContent = 'UNLOCKED';
+      this.sounds.success.play();
+    } else {
+      this.dom.lock.classList.remove('verified');
+      this.dom.status.textContent = 'LOCKED';
+      if(this.verified) {
+        this.sounds.fail.play();
+      }
+      this.verified = false;
+    }
+  }
+  
+  getCode() {
+    let code = '';
+    for(let i = 0, len = this.dom.rows.length; i < len; i++) {
+      let cell = this.dom.rows[i].querySelector('.is-selected .text');
+      let num = cell.textContent;
+      code += num;
+    }
+    return code;
+  }
+  
+  setupDom() {
+    this.dom = {};
+    this.dom.lock = document.querySelector('.lock');
+    this.dom.rows = document.querySelectorAll('.row');
+    this.dom.code = document.querySelector('.code');
+    this.dom.status = document.querySelector('.status');
+  }
+  
+  setupAudio() {
+    this.sounds = {};
+    
+    this.sounds.select = new Howl({
+      src: [
+        'https://jackrugile.com/sounds/misc/lock-button-1.mp3',
+        'https://jackrugile.com/sounds/misc/lock-button-1.ogg'
+      ],
+      volume: 0.5,
+      rate: 1.4
+    });
+    
+    this.sounds.prev = new Howl({
+      src: [
+        'https://jackrugile.com/sounds/misc/lock-button-4.mp3',
+        'https://jackrugile.com/sounds/misc/lock-button-4.ogg'
+      ],
+      volume: 0.5,
+      rate: 1
+    });
+    
+    this.sounds.next = new Howl({
+      src: [
+        'https://jackrugile.com/sounds/misc/lock-button-4.mp3',
+        'https://jackrugile.com/sounds/misc/lock-button-4.ogg'
+      ],
+      volume: 0.5,
+      rate: 1.2
+    });
+    
+    this.sounds.hover = new Howl({
+      src: [
+        'https://jackrugile.com/sounds/misc/lock-button-1.mp3',
+        'https://jackrugile.com/sounds/misc/lock-button-1.ogg'
+      ],
+      volume: 0.2,
+      rate: 3
+    });
+    
+    this.sounds.success = new Howl({
+      src: [
+        'https://jackrugile.com/sounds/misc/lock-online-1.mp3',
+        'https://jackrugile.com/sounds/misc/lock-online-1.ogg'
+      ],
+      volume: 0.5,
+      rate: 1
+    });
+    
+    this.sounds.fail = new Howl({
+      src: [
+        'https://jackrugile.com/sounds/misc/lock-fail-1.mp3',
+        'https://jackrugile.com/sounds/misc/lock-fail-1.ogg'
+      ],
+      volume: 0.6,
+      rate: 1
+    });
+  }
+  
+  setupFlickity() {
+    for(let i = 0, len = this.dom.rows.length; i < len; i++) {
+      let row = this.dom.rows[i];
+      let flkty = new Flickity( row, {
+        selectedAttraction: 0.25,
+        friction: 0.9,
+        cellAlign: 'center',
+        pageDots: false,
+        wrapAround: true
+      });
+      flkty.lastIndex = 0;
+
+      flkty.on('select', () => {
+        if(flkty.selectedIndex !== flkty.lastIndex) {
+          this.onChange();
+        }
+        flkty.lastIndex = flkty.selectedIndex;
+      });
+      
+      row.addEventListener('mouseenter', () => {
+        this.sounds.hover.play();			   
+      });
+    }
+    
+    this.dom.prevNextBtns = this.dom.lock.querySelectorAll('.flickity-prev-next-button');
+    for(let i = 0, len = this.dom.prevNextBtns.length; i < len; i++) {
+      let btn = this.dom.prevNextBtns[i];
+      btn.addEventListener('click', () => {
+        if(btn.classList.contains('previous')) {
+          this.sounds.prev.play();
+        } else {
+          this.sounds.next.play();
+        }
+      });
+    }
+  }
+  
+}
+
+let lock = new Lock();
+</script>
+</body>
+</html>

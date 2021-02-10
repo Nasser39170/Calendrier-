@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadeau 4</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <img id="ekg" src="https://raw.githubusercontent.com/ccallen001/JS30Chase/master/23%20Speech%20Synthesis/images/ekg.gif" />
+
+    <div id="android-container">
+        <!--<img src="http://assets.stickpng.com/thumbs/580b57fbd9996e24bc43be0f.png" />-->
+        <div class="android top"></div>
+        <div class="android bottom"></div>
+    </div>
+
+    <button id="speak-btn">PARLER</button>
+<script>
+"use strict";
+
+const synth = window.speechSynthesis;
+
+// stops all speaking
+synth.cancel();
+
+let times = `Nous sommes bientot le 24 décembre.`,
+	subjects = `donc noel approche à grand pas. `,
+	verbs = `une nouvelle année va débuter.`,
+	objects = `n'hésite pas à faire un tour sur le site tous les jours.`,
+	clauses = `une nouvelles fonctionnalité par jour.`,
+	phraseArr = [times, subjects, verbs, objects, clauses].map(phrase =>
+		phrase.split(`-`)
+	),
+	phrase,
+	utterance,
+	engVoices;
+
+synth.onvoiceschanged = () => {
+	engVoices = synth
+		.getVoices()
+		.filter(
+			voice =>
+				voice.lang.includes(`fr-`) &&
+				voice.name !== `Fred` &&
+				voice.name !== `Moira` &&
+				voice.name !== `Victoria` &&
+				voice.name !== `Alex`
+		);
+	synth.onvoiceschanged = null;
+};
+
+// get dom elements
+let androidContainer = document.getElementById(`android-container`),
+	androidTop = document.querySelector(`.android.top`),
+	speakBtn = document.getElementById(`speak-btn`),
+	squiggle = document.getElementById(`squiggle`);
+
+androidContainer.rotation = 0;
+
+// speak function
+function speak() {
+	// disalbe button click transition effect
+	speakBtn.removeEventListener(`mousedown`, clickEffect);
+
+	// if it's not talking...
+	if (!synth.speaking) {
+		// increase count of how many times spoken
+		speak.count++;
+
+		// what???
+		if (speak.count === 3) {
+			let time = 20;
+			squiggle.style.animation = `squiggle ${time}s linear`;
+			squiggle.style.animationFillMode = `forwards`;
+
+			setTimeout(() => {
+				document.body.removeChild(squiggle);
+			}, time * 1000);
+		}
+
+		// rotate the container/head
+		if (speak.count % 5 === 0) {
+			androidContainer.rotation += 720;
+			androidContainer.style.transform = `rotate(${androidContainer.rotation}deg) translate(-10px)`;
+		}
+
+		phrase = ``;
+		// random phrase
+		phraseArr.forEach(
+			ea => (phrase += ea[Math.floor(Math.random() * ea.length)] + ` `)
+		);
+		// reassign utterance with a new instance
+		utterance = new SpeechSynthesisUtterance(phrase);
+		// speed of voice
+		utterance.rate = 0.9;
+		// random voice
+		utterance.voice = engVoices[Math.floor(Math.random() * engVoices.length)];
+
+		console.log({ "speak.count": speak.count });
+		console.log(utterance.voice);
+
+		// animate the android
+		utterance.onstart = () =>
+			(androidTop.style.animation = `talk .33s linear infinite`);
+		utterance.onend = () => {
+			// re-add click transition effects
+			speakBtn.addEventListener(`mousedown`, clickEffect);
+
+			// stop the animation
+			androidTop.style.animation = `none`;
+		};
+
+		// say it!
+		synth.speak(utterance);
+	}
+}
+
+// how many times has the android spoken?
+speak.count = 0;
+
+function clickEffect() {
+	this.style.transform = `scale(.95)`;
+}
+
+// button click effects
+speakBtn.addEventListener(`mousedown`, clickEffect);
+[`mouseup`, `mouseleave`].forEach(ea =>
+	speakBtn.addEventListener(ea, ev => (speakBtn.style.transform = `scale(1)`))
+);
+
+speakBtn.addEventListener(`click`, speak);
+
+</script>
+</body>
+</html>
